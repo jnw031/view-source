@@ -1,0 +1,190 @@
+<html>
+
+<!-- Mirrored from www.toolnb.com/tools/getHttpData.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 30 Aug 2022 13:19:44 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <meta charset="utf-8"/>
+    <meta name="applicable-device" content="pc,mobile">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>view-source ▪ jnw031</title>
+    <meta name="Keywords" content="网页源码在线查看,网页源码查看,手机查看网页源码,获取网页源码,获取HTTP源码,获取HTML源码,在线获取源码,网页源码获取,在线获取源码工具"/>
+    <meta name="Description" content="输入URL地址获取网页源码以及header头数据。在线方便获取网页源码以及自定义user-agent和来源。"/>
+    <link rel="stylesheet" href="./Folders/Public/md/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="./Folders/Public/common/css/common.css"/>
+    <link rel="stylesheet" href="./Folders/Public/jquery-ui-1.12.1/jquery-ui.min.css">
+    <script type="text/javascript" src="./Folders/Public/md/js/jquery.js"></script>
+    <script type="text/javascript" src="./Folders/Public/md/js/bootstrap.js"></script>
+    <script type="text/javascript" src="./Folders/Public/layer-msg/layer.js"></script>
+    <script type="text/javascript" src="./Folders/Public/jquery-ui-1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="./Folders/Public/js/jquery.form.js"></script>
+</head>
+</div>
+    <style>
+        .p_tab {
+            border: 1px;
+        }
+
+        .tuijian a {
+            color: #ff6666;
+        }
+    </style>
+    <script type="text/javascript" src="./Folders/Public/ide/code/src-noconflict/ace.js"></script>
+    <script src="./Folders/Public/inc/jbase64.js"></script>
+    <script src="./Folders/Public/layer-msg/layer.js"></script>
+    <div class="container">
+        <h1>网页源码在线查看</h1>
+        <h5>下面输入框中输入您要查询的域名(前缀要加 http:// 或 https:// )</h5>
+        <div class="row">
+            <div class='col-md-12 col-xs-12  form-inline' id="tools-div">
+                <div class='col-md-12 col-xs-12'>
+                    <label>网站名:</label>
+                    <input type="text" id="data" class='form-control' value="https://www.baidu.com" style="">
+                    <button type="button" class="btn btn-success" onclick="getHttpHead()" id='userClick'>查询</button>
+                </div>
+            </div>
+            <div class='col-md-12 col-xs-12' style="margin-top: 5px;" id="text-result">
+                <pre id='content' style='white-space: pre-wrap;word-wrap: break-word;height: 300px;'></pre>
+                <pre style='white-space: pre-wrap;word-wrap: break-word;display: none;' id='headData'></pre>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $('#data').keydown(function (e) {
+                if (e.keyCode == 13) {
+                    getHttpHead();
+                }
+            });
+        });
+        var editor = ace.edit("content");
+        editor.setTheme("ace/theme/twilight");
+        editor.getSession().setMode("ace/mode/php");
+
+        function getHttpHead() {
+            var data = $('#data').val();
+            var User_Agent = $('#User-Agent').val();
+            var Referer = $('#Referer').val();
+            var cookies = $('#cookies').val();
+            var urldata = $('#urldata').val();
+            var m = $('#m').val();
+            if (data == "" || data == "http://") {
+                return;
+            }
+            if (m == "get" && urldata != "") {
+                alert("不能使用参数！");
+                return;
+            }
+//        window.location='#tools-div';//锚
+            $('#userClick').html('查询中...');
+            $('#headData').css('display', 'block');
+            $.ajax({
+                type: "post",
+                url: "https://api.toolnb.com/Tools/Api/getHttpData.html",
+                data: {data: data, user_agent: User_Agent, referer: Referer, cookies: cookies, urldata: urldata, m: m},
+                dataType: 'json',
+                success: function (result) {
+                    $('#userClick').html('查询');
+                    if (result.code == '1') {
+                        editor.setValue(htmlDecode(result.data['http_data']));
+                        $('#headData').html(result.data['head']);
+                    } else {
+                        alert(result.msg);
+                        editor.setValue(result.data['http_data']);
+                        $('#headData').html(result.data['head']);
+                    }
+                },
+                error: function () {
+                    $('#userClick').html('查询');
+                }
+            });
+        }
+
+        function getHttpHeadDownload() {
+            var data = $('#data').val();
+            var User_Agent = $('#User-Agent').val();
+            var Referer = $('#Referer').val();
+            var cookies = $('#cookies').val();
+            var urldata = $('#urldata').val();
+            var m = $('#m').val();
+            if (data == "" || data == "http://") {
+                return;
+            }
+            if (m == "get" && urldata != "") {
+                alert("不能使用参数！");
+                return;
+            }
+//        window.location='#tools-div';//锚
+            $('#userClickDownload').html('查询中...');
+            $('#headData').css('display', 'block');
+            $.ajax({
+                type: "post",
+                url: "https://api.toolnb.com/Tools/Api/getHttpData.html",
+                data: {data: data, user_agent: User_Agent, referer: Referer, cookies: cookies, urldata: urldata, m: m},
+                dataType: 'json',
+                success: function (result) {
+                    $('#userClickDownload').html('下载');
+                    if (result.code == '1') {
+                        layer.msg('请注意浏览器拦截!');
+                        editor.setValue(htmlDecode(result.data['http_data']));
+                        $('#headData').html(result.data['head']);
+                        var contentText = htmlDecode(result.data['http_data']);
+                        var form = $("<form>");
+                        form.attr("style", "display:none");
+                        form.attr("target", "_blank");
+                        form.attr("method", "post");
+                        form.attr("action", "https://api.toolnb.com/Tools/Api/getHttpDataDownload.html");
+                        var input1 = $("<input>");
+                        input1.attr("type", "hidden");
+                        input1.attr("name", "content");
+                        input1.attr("value", contentText);
+                        form.append(input1);
+                        var input2 = $("<input>");
+                        input2.attr("type", "hidden");
+                        input2.attr("name", "download");
+                        input2.attr("value", 'yes');
+                        form.append(input2);
+                        $("body").append(form);
+                        form.submit();
+                        // $.ajax({
+                        //     type: "post",
+                        //     url: "/Dev/Tools/getHttpDataDownload.html",
+                        //     data: {content: contentText, download: 'no'},
+                        //     dataType: 'json',
+                        //     success: function (result) {
+                        //         console.log(result);
+                        //         if (result.code == 1) {
+                        //             window.location = result.data;
+                        //         }
+                        //     }
+                        // });
+                    } else {
+                        alert(result.msg);
+                        editor.setValue(result.data['http_data']);
+                        $('#headData').html(result.data['head']);
+                    }
+                },
+                error: function () {
+                    $('#userClick').html('查询');
+                }
+            });
+        }
+
+        //获取Html
+        function htmlDecode(html) {
+            var a = document.createElement('a');
+            a.innerHTML = html;
+            return a.textContent;
+        }
+        ;
+    </script>
+
+
+
+
+
+
+</body>
+
+<!-- Mirrored from www.toolnb.com/tools/getHttpData.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 30 Aug 2022 13:19:54 GMT -->
+</html>
